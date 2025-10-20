@@ -1,0 +1,20 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
+  <Profiles>
+    <Profile Name="(Default)" />
+  </Profiles>
+  <Settings>
+    <Setting Name="FortressEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="AutoStartWithWindows" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="LastFortressToggleTime" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)">1/1/2020 12:00:00 AM</Value>
+    </Setting>
+    <Setting Name="LastShutdownTime" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)">1/1/2020 12:00:00 AM</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

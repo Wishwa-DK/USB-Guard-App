@@ -1,0 +1,219 @@
+<Window x:Class="USB_Guard.Dialogs.KeyboardAuthenticationDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Keyboard Authentication - USB Guard" 
+        Height="650" Width="750"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        FontFamily="Segoe UI"
+        Background="#F0F0F0">
+
+    <Window.Resources>
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="5" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Opacity" Value="0.8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CodeInput" TargetType="TextBox">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="MaxLength" Value="1"/>
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Height" Value="60"/>
+            <Setter Property="BorderBrush" Value="#4CAF50"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+    </Window.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Border Grid.Row="0" Background="#4CAF50" CornerRadius="8" Padding="15" Margin="0,0,0,15">
+                <StackPanel>
+                    <TextBlock Text="⌨️ USB Keyboard Authentication" 
+                               FontSize="18" FontWeight="Bold" 
+                               Foreground="White" HorizontalAlignment="Center"/>
+                    <TextBlock Text="STEP 4: Enter 6-digit verification code to authenticate keyboard" 
+                               FontSize="12" Foreground="White" 
+                               HorizontalAlignment="Center" Margin="0,5,0,0" Opacity="0.9"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Device Information -->
+            <Border Grid.Row="1" Background="White" CornerRadius="8" Padding="15" Margin="0,0,0,15">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Device Name:" FontWeight="SemiBold" Margin="0,0,10,5"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" x:Name="DeviceNameText" Text="[Device Name]" Margin="0,0,0,5"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Type:" FontWeight="SemiBold" Margin="0,0,10,5"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" x:Name="DeviceTypeText" Text="⌨️ Keyboard" Margin="0,0,0,5"/>
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Vendor ID:" FontWeight="SemiBold" Margin="0,0,10,5"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" x:Name="VendorIdText" Text="[VID]" Margin="0,0,0,5"/>
+
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Product ID:" FontWeight="SemiBold" Margin="0,0,10,5"/>
+                    <TextBlock Grid.Row="3" Grid.Column="1" x:Name="ProductIdText" Text="[PID]" Margin="0,0,0,5"/>
+
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Layout:" FontWeight="SemiBold" Margin="0,0,10,0"/>
+                    <TextBlock Grid.Row="4" Grid.Column="1" x:Name="KeyboardLayoutText" Text="[Layout]"/>
+                </Grid>
+            </Border>
+
+            <!-- Authentication Challenge -->
+            <Border Grid.Row="2" Background="#E8F5E8" CornerRadius="8" Padding="20" Margin="0,0,0,15">
+                <StackPanel>
+                    <TextBlock Text="🔐 STEP 4: Keyboard Verification Challenge" 
+                               FontSize="16" FontWeight="Bold" 
+                               HorizontalAlignment="Center" Margin="0,0,0,15"
+                               Foreground="#2E7D32"/>
+
+                    <TextBlock Text="Enter the following 6-digit code using this keyboard:" 
+                               FontSize="14" HorizontalAlignment="Center" 
+                               Margin="0,0,0,10" Foreground="#424242"/>
+
+                    <!-- Challenge Code Display -->
+                    <Border Background="#FFF" CornerRadius="8" Padding="20" Margin="0,0,0,20"
+                            BorderBrush="#4CAF50" BorderThickness="2">
+                        <TextBlock x:Name="ChallengeCodeText" Text="123456" 
+                                   FontSize="32" FontWeight="Bold" 
+                                   HorizontalAlignment="Center" 
+                                   Foreground="#2E7D32"
+                                   FontFamily="Consolas"/>
+                    </Border>
+
+                    <TextBlock Text="Type the code using the new keyboard:" 
+                               FontSize="14" HorizontalAlignment="Center" 
+                               Margin="0,0,0,10" Foreground="#424242"/>
+
+                    <!-- Instruction status text -->
+                    <TextBlock x:Name="InstructionText" Text="Place your hands on the new keyboard and type the code above" 
+                               FontSize="13" HorizontalAlignment="Center" 
+                               Margin="0,0,0,15" Foreground="#666" FontStyle="Italic"/>
+
+                    <!-- Code Input Fields -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+                        <TextBox x:Name="Code1" Style="{StaticResource CodeInput}" 
+                                 TextChanged="CodeInput_TextChanged" KeyDown="CodeInput_KeyDown"/>
+                        <TextBox x:Name="Code2" Style="{StaticResource CodeInput}" 
+                                 TextChanged="CodeInput_TextChanged" KeyDown="CodeInput_KeyDown"/>
+                        <TextBox x:Name="Code3" Style="{StaticResource CodeInput}" 
+                                 TextChanged="CodeInput_TextChanged" KeyDown="CodeInput_KeyDown"/>
+                        <TextBox x:Name="Code4" Style="{StaticResource CodeInput}" 
+                                 TextChanged="CodeInput_TextChanged" KeyDown="CodeInput_KeyDown"/>
+                        <TextBox x:Name="Code5" Style="{StaticResource CodeInput}" 
+                                 TextChanged="CodeInput_TextChanged" KeyDown="CodeInput_KeyDown"/>
+                        <TextBox x:Name="Code6" Style="{StaticResource CodeInput}" 
+                                 TextChanged="CodeInput_TextChanged" KeyDown="CodeInput_KeyDown"/>
+                    </StackPanel>
+
+                    <TextBlock x:Name="VerificationStatusText" Text="Waiting for input..." 
+                               FontSize="14" HorizontalAlignment="Center" 
+                               Foreground="#666"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Error Display -->
+            <Border Grid.Row="3" x:Name="ErrorPanel" Background="#FFEBEE" CornerRadius="8" 
+                    Padding="15" Margin="0,0,0,15" Visibility="Collapsed">
+                <TextBlock x:Name="ErrorText" Text="[Error Message]" 
+                           Foreground="#D32F2F" FontWeight="SemiBold" TextWrapping="Wrap"/>
+            </Border>
+
+            <!-- Failed Attempts Warning -->
+            <Border Grid.Row="4" x:Name="WarningPanel" Background="#FFF3E0" CornerRadius="8" 
+                    Padding="15" Margin="0,0,0,15" Visibility="Collapsed">
+                <StackPanel>
+                    <TextBlock Text="⚠️ Authentication Warning:" FontSize="14" FontWeight="SemiBold" 
+                               Foreground="#F57C00" Margin="0,0,0,5"/>
+                    <TextBlock x:Name="WarningText" Text="[Warning Message]" 
+                               Foreground="#E65100" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Instructions -->
+            <Border Grid.Row="5" Background="White" CornerRadius="8" Padding="15" Margin="0,0,0,15">
+                <StackPanel>
+                    <TextBlock Text="📋 STEP 4: Instructions:" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                    <TextBlock Text="• Use the newly connected keyboard to type the 6-digit code
+• Code must match exactly to authenticate the keyboard
+• You have 3 minutes to complete authentication
+• After 2 failed attempts, the keyboard will be permanently blocked" 
+                               FontSize="11" Foreground="#666" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Timer -->
+            <Border Grid.Row="6" Background="#FFEBEE" CornerRadius="8" Padding="15" Margin="0,0,0,15">
+                <TextBlock x:Name="TimerText" Text="STEP 4: Time remaining: 180 seconds" 
+                           FontSize="16" FontWeight="SemiBold" 
+                           HorizontalAlignment="Center" Foreground="#D32F2F"/>
+            </Border>
+
+            <!-- Action Buttons -->
+            <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="VerifyButton" Content="✓ Verify Code" 
+                        Background="#4CAF50" Foreground="White"
+                        Style="{StaticResource ModernButton}" 
+                        Click="VerifyButton_Click" Margin="0,0,10,0"
+                        IsEnabled="False"/>
+                        
+                <Button x:Name="RegenerateButton" Content="🔄 New Code" 
+                        Background="#2196F3" Foreground="White"
+                        Style="{StaticResource ModernButton}" 
+                        Click="RegenerateButton_Click" Margin="0,0,10,0"/>
+                        
+                <Button x:Name="BlockButton" Content="✗ Block Keyboard" 
+                        Background="#F44336" Foreground="White"
+                        Style="{StaticResource ModernButton}" 
+                        Click="BlockButton_Click"/>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</Window>

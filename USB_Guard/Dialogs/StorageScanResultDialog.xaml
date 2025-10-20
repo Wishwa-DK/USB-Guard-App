@@ -1,0 +1,335 @@
+﻿<Window x:Class="USB_Guard.Dialogs.StorageScanResultDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="USB Guard - Storage Device Security Analysis" 
+        Height="700" Width="850"
+        MinHeight="600" MinWidth="750"
+        MaxHeight="800" MaxWidth="900"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize"
+        FontFamily="Segoe UI"
+        Background="#FAFAFA"
+        Topmost="True">
+
+    <Window.Resources>
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="6" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.85"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Opacity" Value="0.7"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ThreatCounter" TargetType="Border">
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="16,14"/>
+            <Setter Property="Margin" Value="6"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="MinHeight" Value="95"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#CCCCCC" ShadowDepth="3" Opacity="0.4" BlurRadius="8"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BlockingStatus" TargetType="Border">
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="MinHeight" Value="60"/>
+        </Style>
+
+        <Style x:Key="SectionHeader" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
+
+        <Style x:Key="StatusLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Opacity" Value="0.8"/>
+        </Style>
+    </Window.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="25">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header Section -->
+            <Border Grid.Row="0" x:Name="HeaderPanel" CornerRadius="12" Padding="25" Margin="0,0,0,20" Background="#2196F3">
+                <StackPanel>
+                    <TextBlock x:Name="HeaderText" Text="Live Storage Security Analysis" 
+                               FontSize="22" FontWeight="Bold" 
+                               Foreground="White" HorizontalAlignment="Center"/>
+                    <TextBlock x:Name="SubHeaderText" Text="Real-time malware scanning with advanced protection" 
+                               FontSize="13" Foreground="White" 
+                               HorizontalAlignment="Center" Margin="0,8,0,0" Opacity="0.95"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Device Information -->
+            <Border Grid.Row="1" Background="White" CornerRadius="10" Padding="20" Margin="0,0,0,15" BorderThickness="1" BorderBrush="#E0E0E0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="DEVICE NAME" Style="{StaticResource StatusLabel}" Foreground="#666"/>
+                        <TextBlock x:Name="DeviceNameText" Text="[Device Name]" FontWeight="SemiBold" FontSize="15" Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                    <Border Grid.Column="1" Width="2" Background="#E0E0E0" Margin="15,0"/>
+                    
+                    <StackPanel Grid.Column="2" HorizontalAlignment="Right">
+                        <TextBlock Text="DRIVE LETTER" Style="{StaticResource StatusLabel}" Foreground="#666" TextAlignment="Right"/>
+                        <TextBlock x:Name="DriveLetterText" Text="[Drive]" FontWeight="SemiBold" FontSize="15" Margin="0,2,0,0" TextAlignment="Right"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Security Status Panel -->
+            <Border Grid.Row="2" x:Name="BlockingStatusPanel" Background="#F8F9FA" CornerRadius="10" Padding="20" Margin="0,0,0,15" 
+                    BorderThickness="1" BorderBrush="#DEE2E6" Visibility="Collapsed">
+                <StackPanel>
+                    <TextBlock Text="SECURITY PROTECTION STATUS" 
+                               Style="{StaticResource SectionHeader}"
+                               Foreground="#495057" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                    
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <!-- Application Level Status -->
+                        <Border Grid.Column="0" x:Name="AppLevelStatus" Style="{StaticResource BlockingStatus}" 
+                                Background="#FFF5F5" BorderBrush="#F44336">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="APPLICATION LEVEL" Style="{StaticResource StatusLabel}"
+                                           Foreground="#D32F2F" HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="AppLevelStatusText" Text="BLOCKED" FontWeight="Bold" FontSize="13" 
+                                           Foreground="#D32F2F" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Border>
+                        
+                        <!-- System Level Status -->
+                        <Border Grid.Column="1" x:Name="SystemLevelStatus" Style="{StaticResource BlockingStatus}" 
+                                Background="#FFF8E1" BorderBrush="#FF9800">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="SYSTEM LEVEL" Style="{StaticResource StatusLabel}"
+                                           Foreground="#F57C00" HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="SystemLevelStatusText" Text="PROCESSING..." FontWeight="Bold" FontSize="13" 
+                                           Foreground="#F57C00" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Threat Detection Panel -->
+            <Border Grid.Row="3" x:Name="ThreatCountPanel" Background="White" CornerRadius="12" Padding="25" Margin="0,0,0,20" 
+                    BorderThickness="2" BorderBrush="#FFCDD2" Visibility="Collapsed">
+                <StackPanel>
+                    <TextBlock Text="SECURITY THREATS DETECTED" 
+                               Style="{StaticResource SectionHeader}"
+                               Foreground="#D32F2F" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+                    <!-- Enhanced Threat Counters -->
+                    <Grid x:Name="ThreatCountersGrid">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Critical Threats -->
+                        <Border Grid.Column="0" Style="{StaticResource ThreatCounter}" 
+                                Background="#FFEBEE" BorderBrush="#E53935">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="CRITICAL" Style="{StaticResource StatusLabel}"
+                                           Foreground="#B71C1C" HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="CriticalCountText" Text="0" FontSize="30" FontWeight="Bold" 
+                                           Foreground="#D32F2F" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                                <TextBlock Text="High Risk" FontSize="10" 
+                                           Foreground="#B71C1C" HorizontalAlignment="Center" Opacity="0.7"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- High Threats -->
+                        <Border Grid.Column="1" Style="{StaticResource ThreatCounter}" 
+                                Background="#FFF3E0" BorderBrush="#FB8C00">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="HIGH" Style="{StaticResource StatusLabel}"
+                                           Foreground="#E65100" HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="HighCountText" Text="0" FontSize="30" FontWeight="Bold" 
+                                           Foreground="#F57C00" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                                <TextBlock Text="Significant Risk" FontSize="10" 
+                                           Foreground="#E65100" HorizontalAlignment="Center" Opacity="0.7"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Medium Threats -->
+                        <Border Grid.Column="2" Style="{StaticResource ThreatCounter}" 
+                                Background="#FFFDE7" BorderBrush="#FBC02D">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="MEDIUM" Style="{StaticResource StatusLabel}"
+                                           Foreground="#F57F17" HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="MediumCountText" Text="0" FontSize="30" FontWeight="Bold" 
+                                           Foreground="#FF8F00" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                                <TextBlock Text="Moderate Risk" FontSize="10" 
+                                           Foreground="#F57F17" HorizontalAlignment="Center" Opacity="0.7"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Total Threats -->
+                        <Border Grid.Column="3" Style="{StaticResource ThreatCounter}" 
+                                Background="#F3E5F5" BorderBrush="#8E24AA">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="TOTAL" Style="{StaticResource StatusLabel}"
+                                           Foreground="#6A1B9A" HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="TotalThreatCountText" Text="0" FontSize="30" FontWeight="Bold" 
+                                           Foreground="#8E24AA" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                                <TextBlock Text="All Threats" FontSize="10" 
+                                           Foreground="#6A1B9A" HorizontalAlignment="Center" Opacity="0.7"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- Live Threat Details List -->
+                    <Border x:Name="LiveThreatListPanel" Background="#FAFAFA" CornerRadius="8" 
+                            Padding="18" Margin="0,20,0,0" MaxHeight="160" BorderThickness="1" BorderBrush="#E0E0E0" Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBlock Text="DETECTED THREATS" Style="{StaticResource StatusLabel}" 
+                                       Foreground="#666" Margin="0,0,0,10"/>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="120">
+                                <StackPanel x:Name="LiveThreatList">
+                                    <!-- Dynamic threat items will be added here -->
+                                </StackPanel>
+                            </ScrollViewer>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- Clean Device Status -->
+            <Border Grid.Row="4" x:Name="CleanDevicePanel" Background="White" CornerRadius="12" Padding="25" Margin="0,0,0,20" 
+                    BorderThickness="2" BorderBrush="#C8E6C9" Visibility="Collapsed">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="DEVICE SECURITY STATUS: CLEAN" 
+                               Style="{StaticResource SectionHeader}"
+                               Foreground="#2E7D32" HorizontalAlignment="Center"/>
+                    <TextBlock Text="No security threats detected - Device is safe to use" 
+                               FontSize="13" Foreground="#388E3C" 
+                               HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Scan Progress Statistics -->
+            <Border Grid.Row="5" Background="White" CornerRadius="10" Padding="20" Margin="0,0,0,15" BorderThickness="1" BorderBrush="#E0E0E0">
+                <StackPanel>
+                    <TextBlock Text="SCAN PROGRESS" Style="{StaticResource StatusLabel}" 
+                               Foreground="#666" HorizontalAlignment="Center" Margin="0,0,0,12"/>
+                    
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                            <TextBlock Text="FILES SCANNED" Style="{StaticResource StatusLabel}" HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="ScannedFilesText" Text="0" FontSize="20" FontWeight="Bold" 
+                                       HorizontalAlignment="Center" Foreground="#2196F3" Margin="0,4,0,0"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                            <TextBlock Text="SCAN TIME" Style="{StaticResource StatusLabel}" HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="ScanTimeText" Text="0.0s" FontSize="20" FontWeight="Bold" 
+                                       HorizontalAlignment="Center" Foreground="#FF9800" Margin="0,4,0,0"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                            <TextBlock Text="DATA SIZE" Style="{StaticResource StatusLabel}" HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="TotalSizeText" Text="0 B" FontSize="20" FontWeight="Bold" 
+                                       HorizontalAlignment="Center" Foreground="#4CAF50" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Auto-Block Timer -->
+            <Border Grid.Row="6" x:Name="AutoBlockTimerPanel" Background="#FFEBEE" CornerRadius="10" Padding="20" Margin="0,0,0,15" 
+                    BorderThickness="2" BorderBrush="#FFCDD2" Visibility="Collapsed">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="⛔ MALICIOUS DEVICE DETECTED" 
+                               FontSize="15" FontWeight="Bold" 
+                               Foreground="#B71C1C" HorizontalAlignment="Center"/>
+                    <TextBlock x:Name="AutoBlockCountdownText" Text="3 seconds" 
+                               FontSize="26" FontWeight="Bold" 
+                               Foreground="#D32F2F" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                    <TextBlock Text="Device will be blocked automatically - No user action needed" 
+                               FontSize="12" Foreground="#C62828" 
+                               HorizontalAlignment="Center" Margin="0,8,0,0" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Auto-Allow Timer -->
+            <Border Grid.Row="7" x:Name="AutoAllowTimerPanel" Background="#E8F5E9" CornerRadius="10" Padding="20" Margin="0,0,0,15" 
+                    BorderThickness="2" BorderBrush="#C8E6C9" Visibility="Collapsed">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="✅ CLEAN DEVICE VERIFIED" 
+                               FontSize="15" FontWeight="Bold" 
+                               Foreground="#2E7D32" HorizontalAlignment="Center"/>
+                    <TextBlock x:Name="AutoAllowCountdownText" Text="3 seconds" 
+                               FontSize="26" FontWeight="Bold" 
+                               Foreground="#388E3C" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                    <TextBlock Text="Device will be allowed automatically - No threats found" 
+                               FontSize="12" Foreground="#4CAF50" 
+                               HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Action Buttons - HIDDEN BY DEFAULT (removed from UI flow) -->
+            <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Center" x:Name="ActionButtonsPanel" Visibility="Collapsed" Margin="0,10,0,0">
+                <!-- Buttons kept in code for edge cases but hidden by default -->
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</Window>
